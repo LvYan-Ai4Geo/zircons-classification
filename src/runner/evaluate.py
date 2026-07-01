@@ -51,6 +51,8 @@ def evaluate(x_data, y_data, model_file, label_mapping=None):
 
     # 科研级配色 - Nature/Science风格
     cmap = sns.light_palette("#3B6FB6", as_cmap=True)
+    # cmap = sns.color_palette("YlOrBr", as_cmap=True)
+
 
     # 可视化混淆矩阵
     plt.figure(figsize=(10, 8))
@@ -67,25 +69,26 @@ def evaluate(x_data, y_data, model_file, label_mapping=None):
     )
 
     # plt.title('Confusion Matrix', fontsize=14, fontweight='bold', pad=20) # 取消了标题，不需要
-    plt.ylabel('True Label', fontsize=12)
-    plt.xlabel('Predicted Label', fontsize=12)
+    plt.ylabel('True Label', fontsize=16)
+    plt.xlabel('Predicted Label', fontsize=16)
 
     # 调整刻度标签
-    plt.xticks(fontsize=10, rotation=0, ha='center')
-    plt.yticks(fontsize=10)
+    plt.xticks(fontsize=14, rotation=0, ha='center')
+    plt.yticks(fontsize=14)
 
     plt.tight_layout()
-    # plt.savefig('svm_confusion_matrix_extract', dpi=600, bbox_inches='tight')
+    # plt.savefig('rf_confusion_matrix_extract', dpi=600, bbox_inches='tight')
     plt.show()
 
 
 if __name__ == '__main__':
+    REE_columns = ['Ce','Sm','HREE','Dy','Gd','Nd','LREE','Th','Eu_anomaly','Yb','Gd_Yb_ratio','Nd_Yb_ratio','Eu','Ho','Tm','Lu','U','sum_REE','Th_U_ratio']
+    x_data = pd.read_csv(PROCESSED_DIR / 'x_test_fea_move.csv').loc[:,REE_columns]
+    y_data = pd.read_csv(PROCESSED_DIR / 'y_test_fea_move.csv').iloc[:,1:].values.ravel()
 
-    x_data = pd.read_csv(PROCESSED_DIR / 'x_test_fea_move.csv').iloc[:,1:]
-    y_data = pd.read_csv(PROCESSED_DIR / 'y_test_fea_move.csv').iloc[:,1:]
+    model_file = MODEL_DIR / 'best_xgb_model_fea_dis_move_extract_pca.pkl'
+    model = joblib.load(model_file)
+    print(model.named_steps)
 
-    model_file = MODEL_DIR / 'best_rf_model_fea_dis_move_extract_pca_rffea.pkl'
-    # model = joblib.load(model_file)
-    # print(model)
     label = {0:'Detrital',1:'Hydrothermal',2:'Magmatic',3:'Metamorphic'}
     evaluate(x_data,y_data,model_file,label_mapping=label)

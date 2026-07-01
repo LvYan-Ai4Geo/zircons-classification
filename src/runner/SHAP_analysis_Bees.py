@@ -55,7 +55,7 @@ def draw_shap_beeswarm_chart(shap_values, features, feature_names):
     )
 
     # 2.3 调整X轴标签
-    ax.set_xlabel("SHAP Value (Average impact on model output magnitude)", fontsize=14)
+    # ax.set_xlabel("SHAP Value (Average impact on model output magnitude)", fontsize=14)
     plt.tight_layout()
     plt.savefig('Feature SHAP Bees', dpi=600, bbox_inches='tight')
     plt.show()

@@ -21,16 +21,15 @@ def draw_shap_radial_bar(data):
 
     # 1. 优化图形数值显示
     values = np.sqrt(values)   # ⭐核心：压缩极端值
-    values = values / values.max()
+    values = values / (values.max() + 1)
+
+    # 颜色
+    norm = mcolors.Normalize(vmin=values.min(), vmax=values.max()+0.05)
+    colors = cmap(norm(values))
 
     # 2️.角度
     N = len(values)
     angles = np.linspace(0, 2 * np.pi, N, endpoint=False)
-
-    # 3️.每个柱不同颜色
-    color_positions = np.linspace(0.1, 0.9, N)  # 避免极端浅/深
-    colors = [cmap(p) for p in color_positions]
-
     # 4.画布
     fig = plt.figure(figsize=(8, 8), facecolor="white")
     ax = plt.subplot(111, polar=True)
@@ -49,7 +48,7 @@ def draw_shap_radial_bar(data):
 
     # 6.标签优化
     ax.set_xticks(angles)
-    ax.set_xticklabels(labels, fontsize=11)
+    ax.set_xticklabels(labels, fontsize=14)
 
     for label, angle in zip(ax.get_xticklabels(), angles):
         angle_deg = np.degrees(angle)
@@ -60,7 +59,7 @@ def draw_shap_radial_bar(data):
         label.set_horizontalalignment('center')
 
     ax.set_yticklabels([])
-    ax.grid(True, linestyle="--", alpha=0.3)
+    ax.grid(True, linestyle="--", alpha=0.4)
     ax.spines["polar"].set_visible(False)
     plt.tight_layout()
     plt.savefig('Feature_SHAP_RadialBar', dpi=600, bbox_inches='tight')
@@ -73,12 +72,13 @@ if __name__ == "__main__":
     plt.rcParams['axes.unicode_minus'] = False
 
     # 1.读取数据
+
     X = pd.read_csv(PROCESSED_DIR / "x_train_fea_move.csv").iloc[:, 1:]
     y = pd.read_csv(PROCESSED_DIR / "y_train_fea_move.csv").iloc[:, 1].values.ravel()
     feature_names = X.columns.tolist()
 
     # 2.加载模型
-    model_file = MODEL_DIR / "best_rf_model_fea_dis_move_pca.pkl"
+    model_file = MODEL_DIR / "best_xgb_model_fea_dis_move_pca_0.3.pkl"
     pipeline = joblib.load(model_file)
     best_model = pipeline.steps[-1][1]
 

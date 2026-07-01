@@ -85,7 +85,7 @@ def draw_shap_importance_chart(data):
         fontsize=12,
         va="center"
     )
-    plt.savefig('Feature SHAP Bar', dpi=600, bbox_inches='tight')
+    # plt.savefig('Feature SHAP Bar', dpi=600, bbox_inches='tight')
     plt.show()
 
 
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     feature_names = X.columns.tolist()
 
     # 2.加载模型
-    model_file = MODEL_DIR / "best_rf_model_fea_dis_move_pca.pkl"
+    model_file = MODEL_DIR / "best_xgb_model_fea_dis_move_pca_0.3.pkl"
     pipeline = joblib.load(model_file)
     best_model = pipeline.steps[-1][1]
 
@@ -127,11 +127,10 @@ if __name__ == "__main__":
         analysis_data,
         key=lambda x: x["val"],
         reverse=True
-    )[:22]
+    )[:15]
 
     for i in range(len(analysis_data)):
         print(f'id:{analysis_data[i]['id']},value:{analysis_data[i]['val']}')
     # 绘图
     draw_shap_importance_chart(analysis_data)
-
 

@@ -54,6 +54,7 @@ def train(random_state,model_path,x_train,y_train,std_or_rb = None,use_smote = F
 
     pipeline = Pipeline([
         ('scaler', std_or_rb),
+        ('pca',PCA(n_components=None)),
         ('xgb', XGBClassifier(
             objective='multi:softprob', # 多分类任务
             eval_metric='mlogloss',
